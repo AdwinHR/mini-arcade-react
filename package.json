@@ -15,7 +15,12 @@
     "firebase:preview": "npm run build && firebase hosting:channel:deploy preview",
     "setup:env": "copy env-config.txt .env",
     "setup:functions": "cd functions && npm install",
-    "deploy:production": "npm run build && firebase deploy --only functions,firestore,hosting"
+    "deploy:production": "npm run build && firebase deploy --only functions,firestore,hosting",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:install": "playwright install"
   },
   "dependencies": {
     "@stripe/stripe-js": "^9.4.0",
@@ -25,6 +30,7 @@
     "stripe": "^22.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.0",
     "@vitejs/plugin-react": "^4.2.1",
     "vite": "^5.2.0"
   }
