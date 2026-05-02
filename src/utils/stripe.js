@@ -1,15 +1,37 @@
 import { loadStripe } from '@stripe/stripe-js';
 
+// Check if Stripe is configured
+const isStripeConfigured = () => {
+  return import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY && 
+         import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY !== 'pk_test_YOUR_STRIPE_PUBLISHABLE_KEY_HERE' &&
+         import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY !== '';
+};
+
 // Load Stripe with environment variable
-const stripePromise = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY 
+const stripePromise = isStripeConfigured() 
   ? loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
-  : Promise.reject(new Error('Stripe publishable key not configured'));
+  : Promise.resolve(null); // Return null instead of rejecting
 
 export const createCheckoutSession = async (priceId) => {
   try {
+    // Check if Stripe is configured
+    if (!isStripeConfigured()) {
+      console.log('💳 Stripe not configured - showing demo mode');
+      return { 
+        success: false, 
+        error: 'Stripe not configured. This is a demo mode. To enable payments, configure VITE_STRIPE_PUBLISHABLE_KEY in your environment variables.' 
+      };
+    }
+
     // Validate priceId
     if (!priceId) {
       throw new Error('Price ID is required');
+    }
+
+    const stripe = await stripePromise;
+    
+    if (!stripe) {
+      throw new Error('Stripe failed to load');
     }
 
     // Check if backend API is available
@@ -31,7 +53,6 @@ export const createCheckoutSession = async (priceId) => {
       throw new Error('Invalid session response from server');
     }
     
-    const stripe = await stripePromise;
     const result = await stripe.redirectToCheckout({
       sessionId: session.id,
     });
