@@ -10,7 +10,11 @@ const isStripeConfigured = () => {
 // Load Stripe with environment variable
 const stripePromise = isStripeConfigured() 
   ? loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
-  : Promise.resolve(null); // Return null instead of rejecting
+  : Promise.resolve({ 
+      redirectToCheckout: () => Promise.resolve({ error: { message: 'Stripe not configured' } }),
+      elements: () => null,
+      createPaymentMethod: () => Promise.resolve({ error: { message: 'Stripe not configured' } })
+    }); // Return mock Stripe object instead of null
 
 export const createCheckoutSession = async (priceId) => {
   try {
