@@ -36,6 +36,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
   const [gameStarted, setGameStarted] = useState(false);
   const [gameWon, setGameWon] = useState(false);
   const [challengeSubmitted, setChallengeSubmitted] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   
   const timerRef = useRef(null);
   const isProcessing = useRef(false);
@@ -95,7 +96,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
         clearInterval(timerRef.current);
       }
     };
-  }, [initializeGame]);
+  }, [difficulty, customRows, customCols]);
 
   // Start timer on first flip
   useEffect(() => {
@@ -122,7 +123,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
 
       if (firstCard?.emoji === secondCard?.emoji) {
         // Match found
-        playSound('match');
+        if (soundEnabled) playSound('match');
         
         setTimeout(() => {
           setCards(prev => prev.map((card, idx) => 
@@ -144,7 +145,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
                 log('Timer stopped');
               }
               setGameWon(true);
-              playSound('win');
+              if (soundEnabled) playSound('win');
               
               // Don't automatically call onComplete - let user see the result and click continue
             }
@@ -157,7 +158,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
         }, 500);
       } else {
         // No match
-        playSound('error');
+        if (soundEnabled) playSound('error');
         
         setTimeout(() => {
           setFlipped([]);
@@ -209,13 +210,16 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
 
   // Handle card flip
   const handleCardClick = (index) => {
+    log('Card clicked:', { index, isProcessing: isProcessing.current, flipped, matched: cards[index]?.matched, flippedLength: flipped.length });
+    
     if (isProcessing.current) return;
     if (flipped.includes(index)) return;
     if (cards[index]?.matched) return;
     if (flipped.length >= 2) return;
 
-    playSound('click');
+    if (soundEnabled) playSound('click');
     setFlipped(prev => [...prev, index]);
+    log('Card flipped, new flipped array:', [...flipped, index]);
   };
 
   // Format time display
@@ -350,6 +354,37 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
           <div className="stat-label">Time</div>
           <div className="stat-value">{formatTime(time)}</div>
         </div>
+      </div>
+
+      {/* Sound Control */}
+      <div style={{ 
+        position: 'absolute', 
+        top: '1rem', 
+        right: '1rem',
+        zIndex: 10
+      }}>
+        <button
+          onClick={() => setSoundEnabled(!soundEnabled)}
+          style={{
+            background: 'rgba(255,255,255,0.1)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            color: soundEnabled ? 'var(--accent)' : 'var(--muted)',
+            fontSize: '1.2rem',
+            cursor: 'pointer',
+            padding: '0.5rem',
+            borderRadius: '50%',
+            width: '40px',
+            height: '40px',
+            transition: 'all 0.3s ease',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          title={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
+          aria-label={soundEnabled ? 'Mute sounds' : 'Unmute sounds'}
+        >
+          {soundEnabled ? '🔊' : '🔇'}
+        </button>
       </div>
 
       {/* Game Grid */}
