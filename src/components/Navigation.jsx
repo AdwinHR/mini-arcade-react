@@ -1,18 +1,29 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
-function Navigation({ currentView, goHome }) {
+function Navigation({ isHome, onNavigate }) {
+  const navigate = useNavigate()
+
+  const handleLogoClick = () => {
+    navigate('/')
+  }
   return (
     <nav className="nav">
-      <div className="nav-logo">
+      <div 
+        className="nav-logo" 
+        onClick={handleLogoClick}
+        style={{ cursor: 'pointer' }}
+      >
         🕹️ <span>ARCADE</span>
       </div>
-      <button 
-        className={`nav-back ${currentView !== 'home' ? 'visible' : ''}`}
-        onClick={goHome}
-        aria-label="Go back to home"
-      >
-        ← All Games
-      </button>
+      {!isHome && (
+        <button 
+          className="nav-back visible"
+          onClick={onNavigate}
+        >
+          ← All Games
+        </button>
+      )}
     </nav>
   )
 }

@@ -59,6 +59,20 @@ service cloud.firestore {
         request.resource.data.event in ['game_play', 'page_view', 'premium_interaction'];
     }
     
+    // Challenges - readable by all, creatable by authenticated users
+    match /challenges/{challengeId} {
+      allow read: if true;
+      allow create: if request.auth != null;
+      allow update: if false;
+    }
+    
+    // Challenge attempts - readable and creatable by all
+    match /challengeAttempts/{attemptId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if false;
+    }
+    
     // Deny all other reads/writes
     match /{document=**} {
       allow read, write: if false;
