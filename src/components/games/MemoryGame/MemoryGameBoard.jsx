@@ -15,8 +15,9 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
     }
     
     const configs = {
+      practice: { rows: 2, cols: 2 },
       easy: { rows: 4, cols: 4 },
-      medium: { rows: 6, cols: 6 },
+      medium: { rows: 5, cols: 6 },
       hard: { rows: 8, cols: 8 }
     };
     
@@ -41,10 +42,12 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
 
   // Emoji sets for different grid sizes
   const getEmojiSet = () => {
+    const practiceEmojis = ['🎮', '🎯'];
     const baseEmojis = ['🎮', '🎯', '🎲', '🎪', '🎨', '🎭', '🎬', '🎤'];
     const extendedEmojis = [...baseEmojis, '🎸', '🎹', '🎺', '🎻', '🥁', '🎼', '🎧', '🎵'];
     const fullEmojis = [...extendedEmojis, '🎶', '🎙️', '📻', '📺', '📷', '📸', '📹', '📼', '🔊', '🔉', '🔈', '📢', '📣', '📯', '🔔', '🔕'];
     
+    if (totalPairs <= 2) return practiceEmojis;
     if (totalPairs <= 8) return baseEmojis;
     if (totalPairs <= 16) return extendedEmojis;
     return fullEmojis;
