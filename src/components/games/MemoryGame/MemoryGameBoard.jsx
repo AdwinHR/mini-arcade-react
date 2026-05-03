@@ -34,7 +34,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
   const [time, setTime] = useState(0);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameWon, setGameWon] = useState(false);
-  const [challengeSubmitted, setCharlengeSubmitted] = useState(false);
+  const [challengeSubmitted, setChallengeSubmitted] = useState(false);
   
   const timerRef = useRef(null);
   const isProcessing = useRef(false);
@@ -67,7 +67,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
     setTime(0);
     setGameStarted(false);
     setGameWon(false);
-    setCharlengeSubmitted(false);
+    setChallengeSubmitted(false);
     isProcessing.current = false;
 
     // Create card pairs
@@ -173,7 +173,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
   useEffect(() => {
     if (gameWon && challenge && !challengeSubmitted) {
       log('Submitting challenge attempt');
-      setCharlengeSubmitted(true);
+      setChallengeSubmitted(true);
       
       // Determine if player beat the challenge
       const playerMoves = moves;
