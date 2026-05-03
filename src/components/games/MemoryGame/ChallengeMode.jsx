@@ -115,7 +115,7 @@ function ChallengeMode({ challengeId, onBack, onStartChallenge }) {
           }}>
             {leaderboard.map((entry, index) => (
               <div
-                key={entry.id}
+                key={`${entry.playerName}-${entry.moves}-${entry.time}-${index}`}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
