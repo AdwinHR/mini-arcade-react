@@ -191,10 +191,11 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
         playerWon
       });
 
-      // Submit attempt (you can add player name input later)
+      // Submit attempt with challenger name
+      const playerName = `Challenger ${Math.floor(Math.random() * 1000)}`; // Simple random name for now
       submitChallengeAttempt(
         challenge.id,
-        'Player', // TODO: Get player name
+        playerName,
         playerMoves,
         playerTime,
         true // completed
