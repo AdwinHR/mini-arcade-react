@@ -232,7 +232,10 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
     moves,
     time,
     gameStarted,
-    gameWon
+    gameWon,
+    totalPairs,
+    rows,
+    cols
   });
 
   return (
@@ -258,6 +261,37 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
         </div>
       )}
 
+      {/* Win Screen */}
+      {(() => {
+        log('Win screen check:', { gameWon, matched, totalPairs, shouldShow: gameWon });
+        return gameWon;
+      })() && (
+        <div style={{
+          padding: '1.5rem',
+          background: 'rgba(0,255,136,0.1)',
+          borderRadius: '12px',
+          marginBottom: '1.5rem',
+          textAlign: 'center',
+          border: '2px solid var(--success)',
+          animation: 'pop 0.3s ease-out'
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>
+            🎉
+          </div>
+          <div style={{ 
+            fontSize: '1.2rem', 
+            fontWeight: 800, 
+            marginBottom: '0.5rem',
+            color: 'var(--success)'
+          }}>
+            ✅ Congratulations! You Won!
+          </div>
+          <div style={{ color: 'var(--muted)' }}>
+            Your score: <strong>{moves} moves</strong> in <strong>{formatTime(time)}</strong>
+          </div>
+        </div>
+      )}
+
       {/* Challenge Result Banner */}
       {gameWon && challenge && (
         <div style={{
@@ -275,11 +309,11 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
           }`,
           animation: 'pop 0.3s ease-out'
         }}>
-          <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>
-            {moves < challenge.creatorMoves || (moves === challenge.creatorMoves && time < challenge.creatorTime) ? '🎉' : '💪'}
+          <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>
+            {moves < challenge.creatorMoves || (moves === challenge.creatorMoves && time < challenge.creatorTime) ? '�' : '💪'}
           </div>
           <div style={{ 
-            fontSize: '1.2rem', 
+            fontSize: '1.1rem', 
             fontWeight: 800, 
             marginBottom: '0.5rem',
             color: moves < challenge.creatorMoves || (moves === challenge.creatorMoves && time < challenge.creatorTime)
@@ -291,8 +325,6 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
               : '❌ Challenge Not Beaten'}
           </div>
           <div style={{ color: 'var(--muted)' }}>
-            Your score: <strong>{moves} moves</strong> in <strong>{formatTime(time)}</strong>
-            <br />
             {challenge.creatorName}'s score: <strong>{challenge.creatorMoves} moves</strong> in <strong>{formatTime(challenge.creatorTime)}</strong>
           </div>
         </div>
