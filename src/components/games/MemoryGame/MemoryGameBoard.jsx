@@ -146,12 +146,7 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
               setGameWon(true);
               playSound('win');
               
-              // Call onComplete after a short delay
-              setTimeout(() => {
-                if (onComplete) {
-                  onComplete(moves + 1, time); // +1 because moves state hasn't updated yet
-                }
-              }, 500);
+              // Don't automatically call onComplete - let user see the result and click continue
             }
             
             return newMatched;
@@ -409,20 +404,45 @@ function MemoryGameBoard({ difficulty = 'easy', customRows, customCols, onBack, 
 
       {/* Action Buttons */}
       <div style={{ display: 'flex', gap: '1rem' }}>
-        <Button
-          onClick={initializeGame}
-          variant="secondary"
-          style={{ flex: 1 }}
-        >
-          🔄 New Game
-        </Button>
-        <Button
-          onClick={onBack}
-          variant="ghost"
-          style={{ flex: 1 }}
-        >
-          ← Back
-        </Button>
+        {gameWon ? (
+          <>
+            <Button
+              onClick={() => {
+                if (onComplete) {
+                  onComplete(moves, time);
+                }
+              }}
+              variant="primary"
+              style={{ flex: 1 }}
+            >
+              📤 Continue
+            </Button>
+            <Button
+              onClick={initializeGame}
+              variant="secondary"
+              style={{ flex: 1 }}
+            >
+              🔄 New Game
+            </Button>
+          </>
+        ) : (
+          <>
+            <Button
+              onClick={initializeGame}
+              variant="secondary"
+              style={{ flex: 1 }}
+            >
+              🔄 New Game
+            </Button>
+            <Button
+              onClick={onBack}
+              variant="ghost"
+              style={{ flex: 1 }}
+            >
+              ← Back
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
